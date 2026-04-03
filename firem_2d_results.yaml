@@ -1,0 +1,548 @@
+source: avl_fire_m_results
+version: 0.1.0
+description: >
+  Pattern-based mapping rules for AVL FIRE M reduced-result CSV headers.
+  These rules are intended to convert FIRE M result labels into a canonical
+  variable id plus structured qualifiers.
+
+general_rules:
+  source_software: AVL FIRE M
+  system: postprocessing
+  acquisition_origin: derived
+  representation: scalar
+
+token_mappings:
+  top_level_domains:
+    MEApFlowChannels:
+      component: mea_flow_channels
+    Electrical_Conductor:
+      component: electrical_conductor
+
+  namespaces:
+    FuelCell:
+      physics_namespace: fuel_cell
+    Electromagnetics:
+      physics_namespace: electromagnetics
+    Species:
+      physics_namespace: species_transport
+    "2D Result Container 1":
+      container_type: reduced_selection_results
+
+  boundaries:
+    BND_I_Anode:
+      side: anode
+      location_role: inlet
+    BND_O_Anode:
+      side: anode
+      location_role: outlet
+    BND_I_Cathode:
+      side: cathode
+      location_role: inlet
+    BND_O_Cathode:
+      side: cathode
+      location_role: outlet
+    BND_W_AnodeTerminal:
+      side: anode
+      location_role: terminal
+    BND_W_CathodeTerminal:
+      side: cathode
+      location_role: terminal
+
+  internal_domains:
+    DOM_Anode_CL:
+      component: catalyst_layer
+      side: anode
+      domain: catalyst_layer
+    DOM_Cathode_CL:
+      component: catalyst_layer
+      side: cathode
+      domain: catalyst_layer
+    DOM_Membrane:
+      component: membrane
+      domain: membrane
+
+  phases:
+    "Phase 1":
+      phase_label_raw: "Phase 1"
+    "Phase 2":
+      phase_label_raw: "Phase 2"
+    "Phase 3":
+      phase_label_raw: "Phase 3"
+
+descriptor_patterns:
+  - pattern: "^Number of Cells$"
+    variable_id: cell_count
+    fixed_qualifiers:
+      representation: scalar
+      evaluation_method: selection_property
+
+  - pattern: "^Wall Time Since Start of Simulation$"
+    variable_id: wall_time_since_start
+    fixed_qualifiers:
+      representation: scalar
+      evaluation_method: solver_report
+
+  - pattern: "^Mean Relative Pressure$"
+    variable_id: gauge_pressure
+    fixed_qualifiers:
+      reduction_operator: mean
+      evaluation_method: selection_average
+      quantity_nature: gauge
+
+  - pattern: "^Mean Absolute Pressure(?: (?P<side>Anode|Cathode))?$"
+    variable_id: pressure
+    fixed_qualifiers:
+      reduction_operator: mean
+      evaluation_method: selection_average
+      quantity_nature: absolute
+    capture_to_qualifiers:
+      side: side
+
+  - pattern: "^Mean Total Pressure$"
+    variable_id: total_pressure
+    fixed_qualifiers:
+      reduction_operator: mean
+      evaluation_method: selection_average
+      quantity_nature: total
+
+  - pattern: "^Mean Temperature$"
+    variable_id: temperature
+    fixed_qualifiers:
+      reduction_operator: mean
+      evaluation_method: selection_average
+
+  - pattern: "^Net Mass Flow$"
+    variable_id: mass_flow_rate
+    fixed_qualifiers:
+      reduction_operator: net
+      evaluation_method: boundary_flux_integral
+
+  - pattern: "^Mass Flow$"
+    variable_id: mass_flow_rate
+    fixed_qualifiers:
+      reduction_operator: integrated
+      evaluation_method: boundary_flux_integral
+
+  - pattern: "^Total Mass$"
+    variable_id: mass
+    fixed_qualifiers:
+      reduction_operator: total
+      evaluation_method: volume_integral
+
+  - pattern: "^Volume Fraction$"
+    variable_id: volume_fraction
+    fixed_qualifiers:
+      reduction_operator: mean
+      evaluation_method: selection_average
+
+  - pattern: "^Mean Volume Fraction$"
+    variable_id: volume_fraction
+    fixed_qualifiers:
+      reduction_operator: mean
+      evaluation_method: selection_average
+
+  - pattern: "^Operating Current$"
+    variable_id: current
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Operating Current Density$"
+    variable_id: current_density
+    fixed_qualifiers:
+      evaluation_method: model_report
+      basis: geometric_area
+      quantity_nature: averaged
+
+  - pattern: "^Operating Power$"
+    variable_id: power
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Equilibrium Voltage$"
+    variable_id: equilibrium_voltage
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Exchange Current Density$"
+    variable_id: exchange_current_density
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Heat Source (?P<mechanism>Ohmic|Electrochemical Reaction|Condensation|Liquid Gas|Solid Gas|Liquid Solid)$"
+    variable_id: heat_source_density
+    fixed_qualifiers:
+      evaluation_method: model_report
+    capture_to_qualifiers:
+      mechanism: mechanism
+
+  - pattern: "^Liquid Water Saturation$"
+    variable_id: saturation
+    fixed_qualifiers:
+      phase: liquid
+      evaluation_method: model_report
+
+  - pattern: "^Overpotential Electronic$"
+    variable_id: electronic_overpotential
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Resistance Electronic$"
+    variable_id: electronic_resistance
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Overpotential Ionic (?P<subdomain>Anode Catalyst Layer|Membrane|Cathode Catalyst Layer)$"
+    variable_id: ionic_overpotential
+    fixed_qualifiers:
+      evaluation_method: model_report
+    capture_to_qualifiers:
+      subdomain: subdomain
+
+  - pattern: "^Resistance Ionic (?P<subdomain>Anode Catalyst Layer|Membrane|Cathode Catalyst Layer)$"
+    variable_id: ionic_resistance
+    fixed_qualifiers:
+      evaluation_method: model_report
+    capture_to_qualifiers:
+      subdomain: subdomain
+
+  - pattern: "^Overpotential Ohmic$"
+    variable_id: ohmic_overpotential
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Resistance Ohmic$"
+    variable_id: ohmic_resistance
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Overpotential Activation$"
+    variable_id: activation_overpotential
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Resistance Activation$"
+    variable_id: activation_resistance
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Overpotential Concentration$"
+    variable_id: concentration_overpotential
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Resistance Concentration$"
+    variable_id: concentration_resistance
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Overpotential Parasitic$"
+    variable_id: parasitic_overpotential
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Resistance Parasitic$"
+    variable_id: parasitic_resistance
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Parasitic Reaction Current Density$"
+    variable_id: parasitic_reaction_current_density
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Reaction Current Density$"
+    variable_id: reaction_current_density
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Relative Humidity$"
+    variable_id: relative_humidity
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Stoichiometric Flow Ratio(?: (?P<side>Anode|Cathode))?$"
+    variable_id: stoichiometric_flow_ratio
+    fixed_qualifiers:
+      evaluation_method: model_report
+    capture_to_qualifiers:
+      side: side
+
+  - pattern: "^Water Mass Transfer Gas Dissolved$"
+    variable_id: water_mass_transfer_rate
+    fixed_qualifiers:
+      from_phase: gas
+      to_phase: dissolved
+      evaluation_method: model_report
+
+  - pattern: "^Water Mass Transfer Liquid Dissolved$"
+    variable_id: water_mass_transfer_rate
+    fixed_qualifiers:
+      from_phase: liquid
+      to_phase: dissolved
+      evaluation_method: model_report
+
+  - pattern: "^Local Voltage$"
+    variable_id: local_voltage
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^MEA Voltage$"
+    variable_id: cell_voltage
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Equilibrium Relative Humidity$"
+    variable_id: equilibrium_relative_humidity
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Dew Point$"
+    variable_id: dew_point_temperature
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Pressure Drop Along (?P<side>Anode|Cathode) Channel$"
+    variable_id: pressure_drop
+    fixed_qualifiers:
+      evaluation_method: model_report
+      quantity_nature: differential
+      component: channel
+    capture_to_qualifiers:
+      side: side
+
+  - pattern: "^Electro Osmotic Drag Coefficient$"
+    variable_id: electro_osmotic_drag_coefficient
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Equilibrium Water Content(?: \(Liquid\))?$"
+    variable_id: equilibrium_water_content
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Adsorption Rate Coefficient(?: \(Liquid\))?$"
+    variable_id: adsorption_rate_coefficient
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Desorption Rate Coefficient(?: \(Liquid\))?$"
+    variable_id: desorption_rate_coefficient
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Dissolved Water Diffusion Coefficient$"
+    variable_id: diffusivity
+    fixed_qualifiers:
+      species: h2o
+      phase: dissolved
+      evaluation_method: model_report
+
+  - pattern: "^Henry Coefficient (?P<species>H2|N2|O2)$"
+    variable_id: henry_coefficient
+    fixed_qualifiers:
+      evaluation_method: model_report
+    capture_to_qualifiers:
+      species: species
+
+  - pattern: "^Dissolved Species Diffusion Coefficient (?P<species>H2|N2|O2)$"
+    variable_id: diffusivity
+    fixed_qualifiers:
+      phase: dissolved
+      evaluation_method: model_report
+    capture_to_qualifiers:
+      species: species
+
+  - pattern: "^Dissolved Species Concentration (?P<species>H2|N2|O2)$"
+    variable_id: concentration
+    fixed_qualifiers:
+      phase: dissolved
+      evaluation_method: model_report
+    capture_to_qualifiers:
+      species: species
+
+  - pattern: "^Dissolved Species Mole Fraction (?P<species>H2|N2|O2)$"
+    variable_id: mole_fraction
+    fixed_qualifiers:
+      phase: dissolved
+      evaluation_method: model_report
+    capture_to_qualifiers:
+      species: species
+
+  - pattern: "^Dissolved Water Concentration$"
+    variable_id: concentration
+    fixed_qualifiers:
+      species: h2o
+      phase: dissolved
+      evaluation_method: model_report
+
+  - pattern: "^Dissolved Water Content$"
+    variable_id: dissolved_water_content
+    fixed_qualifiers:
+      species: h2o
+      phase: dissolved
+      evaluation_method: model_report
+
+  - pattern: "^Dissolved Water Flux(?: (?P<mechanism>Diffusive|Osmotic|Convective))?$"
+    variable_id: water_flux
+    fixed_qualifiers:
+      species: h2o
+      phase: dissolved
+      evaluation_method: model_report
+    capture_to_qualifiers:
+      mechanism: mechanism
+
+  - pattern: "^Equilibrium Potential$"
+    variable_id: equilibrium_potential
+    fixed_qualifiers:
+      evaluation_method: model_report
+
+  - pattern: "^Gas Crossover Flux (?P<species>H2|N2|O2)$"
+    variable_id: gas_crossover_flux
+    fixed_qualifiers:
+      evaluation_method: model_report
+    capture_to_qualifiers:
+      species: species
+
+  - pattern: "^Mean (?P<species>H2|H2O|N2|O2) Mass Fraction$"
+    variable_id: mass_fraction
+    fixed_qualifiers:
+      reduction_operator: mean
+      evaluation_method: selection_average
+    capture_to_qualifiers:
+      species: species
+
+  - pattern: "^Mean (?P<species>H2|H2O|N2|O2) Concentration$"
+    variable_id: concentration
+    fixed_qualifiers:
+      reduction_operator: mean
+      evaluation_method: selection_average
+    capture_to_qualifiers:
+      species: species
+
+  - pattern: "^Mean (?P<species>H2|H2O|N2|O2) Mole Fraction$"
+    variable_id: mole_fraction
+    fixed_qualifiers:
+      reduction_operator: mean
+      evaluation_method: selection_average
+    capture_to_qualifiers:
+      species: species
+
+  - pattern: "^Sum of Mass Fractions$"
+    variable_id: mass_fraction_sum
+    fixed_qualifiers:
+      reduction_operator: sum
+      evaluation_method: selection_average
+
+  - pattern: "^Sum of Mole Fractions$"
+    variable_id: mole_fraction_sum
+    fixed_qualifiers:
+      reduction_operator: sum
+      evaluation_method: selection_average
+
+  - pattern: "^Mean Integral Heat Cp$"
+    variable_id: integral_heat_capacity
+    fixed_qualifiers:
+      reduction_operator: mean
+      evaluation_method: selection_average
+
+  - pattern: "^Mean Differential Heat Cp$"
+    variable_id: differential_heat_capacity
+    fixed_qualifiers:
+      reduction_operator: mean
+      evaluation_method: selection_average
+
+  - pattern: "^Mean Gas Constant$"
+    variable_id: gas_constant
+    fixed_qualifiers:
+      reduction_operator: mean
+      evaluation_method: selection_average
+
+  - pattern: "^Mean Viscosity$"
+    variable_id: dynamic_viscosity
+    fixed_qualifiers:
+      reduction_operator: mean
+      evaluation_method: selection_average
+
+  - pattern: "^Mean Thermal Conductivity$"
+    variable_id: conductivity_thermal
+    fixed_qualifiers:
+      reduction_operator: mean
+      evaluation_method: selection_average
+
+  - pattern: "^Mean Diffusivity$"
+    variable_id: diffusivity
+    fixed_qualifiers:
+      reduction_operator: mean
+      evaluation_method: selection_average
+
+  - pattern: "^Mean (?P<species>H2|H2O|N2|O2) (?P<direction>Inlet|Outlet|Accumulated Inlet|Accumulated Outlet) Massflux$"
+    variable_id: mass_flux
+    fixed_qualifiers:
+      reduction_operator: mean
+      evaluation_method: selection_average
+    capture_to_qualifiers:
+      species: species
+      direction: direction
+
+  - pattern: "^Mean (?P<species>H2|H2O|N2|O2) (?P<direction>Inlet|Outlet|Accumulated Inlet|Accumulated Outlet) Moleflux$"
+    variable_id: molar_flux
+    fixed_qualifiers:
+      reduction_operator: mean
+      evaluation_method: selection_average
+    capture_to_qualifiers:
+      species: species
+      direction: direction
+
+  - pattern: "^Mean Water Mass Fraction$"
+    variable_id: mass_fraction
+    fixed_qualifiers:
+      species: h2o
+      reduction_operator: mean
+      evaluation_method: selection_average
+
+  - pattern: "^Electronic Potential$"
+    variable_id: electronic_potential
+    fixed_qualifiers:
+      evaluation_method: selection_average
+
+  - pattern: "^Ionic Potential$"
+    variable_id: ionic_potential
+    fixed_qualifiers:
+      evaluation_method: selection_average
+
+  - pattern: "^Electronic Current Density$"
+    variable_id: electronic_current_density
+    fixed_qualifiers:
+      evaluation_method: selection_average
+
+  - pattern: "^Ionic Current Density$"
+    variable_id: ionic_current_density
+    fixed_qualifiers:
+      evaluation_method: selection_average
+
+  - pattern: "^Electronic Conductivity$"
+    variable_id: conductivity_electrical
+    fixed_qualifiers:
+      phase: solid
+      evaluation_method: selection_average
+
+  - pattern: "^Ionic Conductivity$"
+    variable_id: conductivity_electrical
+    fixed_qualifiers:
+      phase: ion_conducting
+      evaluation_method: selection_average
+
+  - pattern: "^Electric Potential$"
+    variable_id: electric_potential
+    fixed_qualifiers:
+      evaluation_method: selection_average
+
+  - pattern: "^Current Density$"
+    variable_id: current_density
+    fixed_qualifiers:
+      evaluation_method: selection_average
+
+  - pattern: "^Current$"
+    variable_id: current
+    fixed_qualifiers:
+      evaluation_method: selection_integral
