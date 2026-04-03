@@ -1,0 +1,1413 @@
+registry_name: rdm_variable_registry
+registry_title: Example variable registry for experimental and simulation data
+version: 0.1.0
+status: draft
+maintainers:
+  - organization: ZBT
+created: 2026-04-03
+description: >
+  Example reference registry for canonical variable names, units, qualifiers,
+  and contextual semantics for research data management workflows. This example
+  focuses on laboratory test benches, CFD, multiphysics simulation, and
+  electrochemical devices such as PEM electrolyzers.
+
+naming_rules:
+  canonical_id_format: snake_case
+  qualifier_id_format: snake_case
+  principle: >
+    Canonical identifiers describe the physical meaning of a concept.
+    Measurement position, derivation method, source-specific naming, and
+    geometry-specific context are represented through qualifiers and metadata,
+    not by creating separate canonical variables for every location.
+
+defaults:
+  unit_system: SI
+  string_case_sensitive: false
+  status: active
+
+qualifier_vocabularies:
+
+  acquisition_origin:
+    description: How the value entered the data system.
+    allowed_values:
+      - measured
+      - simulated
+      - derived
+      - imported
+      - estimated
+      - fitted
+      - normalized
+      - interpolated
+      - aggregated
+
+  representation:
+    description: Structural or statistical representation of the quantity.
+    allowed_values:
+      - scalar
+      - vector
+      - tensor
+      - field
+      - timeseries
+      - profile
+      - map
+      - point_value
+      - point_series
+      - plane_average
+      - line_average
+      - area_average
+      - volume_average
+      - mass_average
+      - molar_average
+      - integral
+      - minimum
+      - maximum
+      - standard_deviation
+
+  evaluation_method:
+    description: How the quantity was extracted or reduced from raw data.
+    allowed_values:
+      - direct_sensor_reading
+      - control_system_readout
+      - probe_extraction
+      - postprocessing_point_probe
+      - postprocessing_line_probe
+      - postprocessing_plane_probe
+      - postprocessing_volume_probe
+      - cell_average
+      - face_average
+      - node_value
+      - time_average
+      - cycle_average
+      - window_average
+      - spatial_interpolation
+      - temporal_interpolation
+      - numerical_integration
+      - balance_calculation
+      - regression
+      - manual_entry
+
+  system:
+    description: High-level system context.
+    allowed_values:
+      - test_bench
+      - simulation
+      - postprocessing
+      - database
+      - experiment
+      - digital_twin
+
+  component:
+    description: Functional subsystem or device region.
+    allowed_values:
+      - full_system
+      - test_section
+      - feed_line
+      - return_line
+      - anode_loop
+      - cathode_loop
+      - coolant_loop
+      - stack
+      - cell
+      - separator
+      - manifold
+      - humidifier
+      - heat_exchanger
+      - pump
+      - reservoir
+      - gas_liquid_separator
+      - valve
+      - sensor_block
+      - current_collector
+      - bipolar_plate
+      - flow_field
+      - channel
+      - porous_transport_layer
+      - catalyst_layer
+      - membrane
+      - membrane_electrode_assembly
+
+  side:
+    description: Electrochemical side or directional assignment.
+    allowed_values:
+      - anode
+      - cathode
+      - none
+      - inlet_side
+      - outlet_side
+
+  phase:
+    description: Physical phase or pseudo-phase context.
+    allowed_values:
+      - gas
+      - liquid
+      - solid
+      - ionomer
+      - membrane_phase
+      - porous_medium_effective
+      - mixed
+      - none
+
+  domain:
+    description: Numerical or physical domain association.
+    allowed_values:
+      - fluid
+      - solid
+      - electrochemical
+      - thermal
+      - porous
+      - membrane
+      - channel
+      - catalyst_layer
+      - porous_transport_layer
+      - interface
+      - boundary
+      - full_domain
+      - none
+
+  location_role:
+    description: Functional measurement or extraction position.
+    allowed_values:
+      - inlet
+      - outlet
+      - upstream
+      - downstream
+      - center
+      - centerline
+      - midplane
+      - interface
+      - boundary
+      - corner
+      - top
+      - bottom
+      - left
+      - right
+      - internal
+      - external
+      - sensor_port
+      - probe_point
+      - plane
+      - line
+      - volume
+      - manifold_inlet
+      - manifold_outlet
+      - stack_inlet
+      - stack_outlet
+      - cell_inlet
+      - cell_outlet
+      - channel_inlet
+      - channel_outlet
+
+  basis:
+    description: Basis used for normalization or reporting.
+    allowed_values:
+      - none
+      - geometric_area
+      - active_area
+      - electrochemically_active_area
+      - cross_sectional_area
+      - total_volume
+      - pore_volume
+      - catalyst_mass
+      - membrane_mass
+      - dry_mass
+      - wet_mass
+      - mass_basis
+      - mole_basis
+      - volume_basis
+      - total_basis
+
+  quantity_nature:
+    description: Semantic subtype of a quantity.
+    allowed_values:
+      - absolute
+      - gauge
+      - differential
+      - local
+      - averaged
+      - apparent
+      - effective
+      - intrinsic
+      - partial
+      - total
+      - static
+      - dynamic
+      - superficial
+      - true
+      - equilibrium
+      - operating
+
+  species:
+    description: Chemical species associated with the variable.
+    allowed_values:
+      - none
+      - h2
+      - o2
+      - h2o
+      - h_plus
+      - oh_minus
+      - n2
+      - air
+
+  coordinate_reference_type:
+    description: Type of explicit spatial reference.
+    allowed_values:
+      - none
+      - sensor_id
+      - point_id
+      - line_id
+      - plane_id
+      - volume_id
+      - cartesian_point
+      - mesh_entity
+      - boundary_patch
+      - cad_feature
+
+  temporal_context:
+    description: Time reference for a reported value.
+    allowed_values:
+      - instantaneous
+      - steady_state
+      - transient
+      - cycle_resolved
+      - end_of_test
+      - start_of_test
+      - time_averaged
+      - timestep
+      - snapshot
+
+  data_type:
+    description: Allowed basic data types.
+    allowed_values:
+      - float
+      - integer
+      - string
+      - boolean
+      - vector
+      - tensor
+      - array
+      - object
+
+qualifier_sets:
+
+  common_measured_sensor:
+    acquisition_origin: measured
+    representation: point_value
+    evaluation_method: direct_sensor_reading
+    temporal_context: instantaneous
+
+  common_measured_timeseries:
+    acquisition_origin: measured
+    representation: timeseries
+    evaluation_method: direct_sensor_reading
+    temporal_context: transient
+
+  common_simulated_field:
+    acquisition_origin: simulated
+    representation: field
+    evaluation_method: node_value
+    temporal_context: snapshot
+
+  common_simulated_area_average:
+    acquisition_origin: derived
+    representation: area_average
+    evaluation_method: postprocessing_plane_probe
+    temporal_context: snapshot
+
+  common_simulated_volume_average:
+    acquisition_origin: derived
+    representation: volume_average
+    evaluation_method: postprocessing_volume_probe
+    temporal_context: snapshot
+
+variables:
+
+  - id: temperature
+    label: Temperature
+    description: Thermodynamic temperature.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: temperature
+    canonical_unit: K
+    compatible_units:
+      - K
+      - degC
+    status: active
+    tags:
+      - thermal
+      - cfd
+      - experiment
+      - electrochemistry
+    preferred_qualifiers:
+      system:
+        - test_bench
+        - simulation
+      component:
+        - anode_loop
+        - cathode_loop
+        - coolant_loop
+        - stack
+        - cell
+        - channel
+        - membrane
+        - catalyst_layer
+        - porous_transport_layer
+      location_role:
+        - inlet
+        - outlet
+        - center
+        - midplane
+        - sensor_port
+        - plane
+        - volume
+      representation:
+        - point_value
+        - field
+        - area_average
+        - volume_average
+        - timeseries
+      phase:
+        - gas
+        - liquid
+        - solid
+        - porous_medium_effective
+        - none
+    examples:
+      - canonical_name: temperature__anode_loop__stack_inlet__point_value
+        using_qualifiers:
+          system: test_bench
+          component: anode_loop
+          side: anode
+          location_role: stack_inlet
+          acquisition_origin: measured
+          representation: point_value
+          evaluation_method: direct_sensor_reading
+          coordinate_reference_type: sensor_id
+          temporal_context: transient
+      - canonical_name: temperature__membrane__midplane__field
+        using_qualifiers:
+          system: simulation
+          component: membrane
+          domain: membrane
+          side: none
+          location_role: midplane
+          acquisition_origin: simulated
+          representation: field
+          evaluation_method: node_value
+          phase: membrane_phase
+          temporal_context: snapshot
+
+  - id: pressure
+    label: Pressure
+    description: Thermodynamic absolute pressure.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: pressure
+    canonical_unit: Pa
+    compatible_units:
+      - Pa
+      - kPa
+      - bar
+      - mbar
+    status: active
+    tags:
+      - fluid
+      - cfd
+      - experiment
+    preferred_qualifiers:
+      quantity_nature:
+        - absolute
+        - static
+      system:
+        - test_bench
+        - simulation
+      component:
+        - anode_loop
+        - cathode_loop
+        - stack
+        - channel
+        - manifold
+      location_role:
+        - inlet
+        - outlet
+        - upstream
+        - downstream
+        - probe_point
+        - plane
+      representation:
+        - point_value
+        - field
+        - area_average
+        - timeseries
+    examples:
+      - canonical_name: pressure__cathode_loop__upstream__point_value
+        using_qualifiers:
+          system: test_bench
+          component: cathode_loop
+          side: cathode
+          location_role: upstream
+          acquisition_origin: measured
+          representation: point_value
+          evaluation_method: direct_sensor_reading
+          quantity_nature: absolute
+      - canonical_name: pressure__channel__outlet_plane__area_average
+        using_qualifiers:
+          system: postprocessing
+          component: channel
+          side: anode
+          domain: fluid
+          location_role: channel_outlet
+          acquisition_origin: derived
+          representation: area_average
+          evaluation_method: postprocessing_plane_probe
+          quantity_nature: absolute
+
+  - id: gauge_pressure
+    label: Gauge pressure
+    description: Pressure relative to ambient or another defined reference pressure.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: pressure
+    canonical_unit: Pa
+    compatible_units:
+      - Pa
+      - kPa
+      - bar
+      - mbar
+    status: active
+    tags:
+      - fluid
+      - experiment
+    preferred_qualifiers:
+      quantity_nature:
+        - gauge
+
+  - id: pressure_drop
+    label: Pressure drop
+    description: Pressure difference between two defined locations.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: pressure_difference
+    canonical_unit: Pa
+    compatible_units:
+      - Pa
+      - kPa
+      - bar
+      - mbar
+    status: active
+    tags:
+      - fluid
+      - derived
+    required_context_fields:
+      - from_location
+      - to_location
+    examples:
+      - canonical_name: pressure_drop__anode_loop__stack_inlet_to_stack_outlet__scalar
+        using_qualifiers:
+          system: test_bench
+          component: anode_loop
+          side: anode
+          acquisition_origin: derived
+          representation: scalar
+          evaluation_method: balance_calculation
+          quantity_nature: differential
+
+  - id: velocity
+    label: Velocity
+    description: Local fluid velocity vector.
+    category: variable
+    data_type: vector
+    dimensionality: vector
+    quantity_kind: velocity
+    canonical_unit: m/s
+    compatible_units:
+      - m/s
+      - cm/s
+    status: active
+    tags:
+      - cfd
+      - transport
+    preferred_qualifiers:
+      component:
+        - channel
+        - manifold
+        - porous_transport_layer
+      domain:
+        - fluid
+        - porous
+      representation:
+        - field
+        - point_value
+        - area_average
+      quantity_nature:
+        - local
+        - superficial
+        - effective
+
+  - id: volumetric_flow_rate
+    label: Volumetric flow rate
+    description: Volumetric flow rate through a line, boundary, or device section.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: volume_flow_rate
+    canonical_unit: m^3/s
+    compatible_units:
+      - m^3/s
+      - L/min
+      - mL/min
+      - NL/min
+    status: active
+    tags:
+      - experiment
+      - process
+      - flow
+    preferred_qualifiers:
+      component:
+        - anode_loop
+        - cathode_loop
+        - coolant_loop
+        - feed_line
+        - return_line
+      location_role:
+        - inlet
+        - outlet
+        - upstream
+        - downstream
+      acquisition_origin:
+        - measured
+        - derived
+
+  - id: mass_flow_rate
+    label: Mass flow rate
+    description: Mass flow rate through a line, boundary, or device section.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: mass_flow_rate
+    canonical_unit: kg/s
+    compatible_units:
+      - kg/s
+      - g/s
+      - kg/h
+    status: active
+    tags:
+      - process
+      - flow
+
+  - id: molar_flow_rate
+    label: Molar flow rate
+    description: Molar flow rate for a total stream or species-specific stream.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: amount_of_substance_flow_rate
+    canonical_unit: mol/s
+    compatible_units:
+      - mol/s
+      - mmol/s
+      - mol/min
+    status: active
+    tags:
+      - process
+      - chemistry
+    preferred_qualifiers:
+      species:
+        - h2
+        - o2
+        - h2o
+        - none
+
+  - id: current
+    label: Current
+    description: Electric current.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: electric_current
+    canonical_unit: A
+    compatible_units:
+      - A
+      - mA
+    status: active
+    tags:
+      - electrochemistry
+      - experiment
+
+  - id: current_density
+    label: Current density
+    description: Electric current normalized to a defined area basis.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: electric_current_density
+    canonical_unit: A/m^2
+    compatible_units:
+      - A/m^2
+      - A/cm^2
+      - mA/cm^2
+    status: active
+    tags:
+      - electrochemistry
+      - simulation
+      - experiment
+    preferred_qualifiers:
+      basis:
+        - geometric_area
+        - active_area
+        - electrochemically_active_area
+      representation:
+        - scalar
+        - field
+        - area_average
+      quantity_nature:
+        - local
+        - averaged
+    examples:
+      - canonical_name: current_density__cell__active_area__scalar
+        using_qualifiers:
+          system: test_bench
+          component: cell
+          side: none
+          acquisition_origin: derived
+          representation: scalar
+          evaluation_method: balance_calculation
+          basis: geometric_area
+      - canonical_name: current_density__catalyst_layer__field
+        using_qualifiers:
+          system: simulation
+          component: catalyst_layer
+          domain: electrochemical
+          acquisition_origin: simulated
+          representation: field
+          quantity_nature: local
+          basis: geometric_area
+
+  - id: voltage
+    label: Voltage
+    description: Electrical potential difference between two defined terminals or locations.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: electric_potential_difference
+    canonical_unit: V
+    compatible_units:
+      - V
+      - mV
+    status: active
+    tags:
+      - electrochemistry
+      - experiment
+    required_context_fields:
+      - from_location
+      - to_location
+
+  - id: cell_voltage
+    label: Cell voltage
+    description: Total voltage across the electrochemical cell.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: electric_potential_difference
+    canonical_unit: V
+    compatible_units:
+      - V
+      - mV
+    status: active
+    tags:
+      - electrochemistry
+      - kpi
+
+  - id: electric_potential
+    label: Electric potential
+    description: Local electric potential in a specified conducting or ion-conducting phase.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: electric_potential
+    canonical_unit: V
+    compatible_units:
+      - V
+      - mV
+    status: active
+    tags:
+      - electrochemistry
+      - simulation
+    preferred_qualifiers:
+      phase:
+        - solid
+        - ionomer
+        - membrane_phase
+      domain:
+        - electrochemical
+      representation:
+        - field
+        - point_value
+
+  - id: electronic_potential
+    label: Electronic potential
+    description: Electric potential in the electronically conducting solid phase.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: electric_potential
+    canonical_unit: V
+    compatible_units:
+      - V
+      - mV
+    status: active
+    tags:
+      - electrochemistry
+      - simulation
+
+  - id: ionic_potential
+    label: Ionic potential
+    description: Electric potential in the ion-conducting phase.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: electric_potential
+    canonical_unit: V
+    compatible_units:
+      - V
+      - mV
+    status: active
+    tags:
+      - electrochemistry
+      - simulation
+
+  - id: activation_overpotential
+    label: Activation overpotential
+    description: Activation contribution to electrochemical overpotential.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: electric_potential_difference
+    canonical_unit: V
+    compatible_units:
+      - V
+      - mV
+    status: active
+    tags:
+      - electrochemistry
+      - derived
+      - simulation
+
+  - id: ohmic_overpotential
+    label: Ohmic overpotential
+    description: Ohmic contribution to electrochemical overpotential.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: electric_potential_difference
+    canonical_unit: V
+    compatible_units:
+      - V
+      - mV
+    status: active
+    tags:
+      - electrochemistry
+      - derived
+      - simulation
+
+  - id: concentration
+    label: Concentration
+    description: Species concentration in a given phase and domain.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: concentration
+    canonical_unit: mol/m^3
+    compatible_units:
+      - mol/m^3
+      - mmol/L
+      - mol/L
+    status: active
+    tags:
+      - chemistry
+      - transport
+      - simulation
+      - experiment
+    preferred_qualifiers:
+      species:
+        - h2
+        - o2
+        - h2o
+        - h_plus
+        - oh_minus
+      phase:
+        - gas
+        - liquid
+        - ionomer
+        - membrane_phase
+      representation:
+        - field
+        - point_value
+        - area_average
+        - volume_average
+
+  - id: mass_fraction
+    label: Mass fraction
+    description: Species mass fraction in a given phase.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: mass_fraction
+    canonical_unit: "1"
+    compatible_units:
+      - "1"
+      - "%"
+    status: active
+    tags:
+      - chemistry
+      - transport
+    preferred_qualifiers:
+      species:
+        - h2
+        - o2
+        - h2o
+      phase:
+        - gas
+        - liquid
+        - mixed
+
+  - id: mole_fraction
+    label: Mole fraction
+    description: Species mole fraction in a given phase.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: mole_fraction
+    canonical_unit: "1"
+    compatible_units:
+      - "1"
+      - "%"
+    status: active
+    tags:
+      - chemistry
+      - transport
+    preferred_qualifiers:
+      species:
+        - h2
+        - o2
+        - h2o
+      phase:
+        - gas
+        - liquid
+        - mixed
+
+  - id: saturation
+    label: Saturation
+    description: Phase saturation, typically for liquid or gas in a porous medium.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: saturation
+    canonical_unit: "1"
+    compatible_units:
+      - "1"
+      - "%"
+    status: active
+    tags:
+      - multiphase
+      - porous_media
+      - simulation
+    preferred_qualifiers:
+      phase:
+        - liquid
+        - gas
+      domain:
+        - porous
+        - porous_transport_layer
+        - catalyst_layer
+      quantity_nature:
+        - local
+        - averaged
+
+  - id: volume_fraction
+    label: Volume fraction
+    description: Volume fraction of a specified phase in a mixed or multiphase region.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: volume_fraction
+    canonical_unit: "1"
+    compatible_units:
+      - "1"
+      - "%"
+    status: active
+    tags:
+      - multiphase
+      - cfd
+    preferred_qualifiers:
+      phase:
+        - gas
+        - liquid
+        - solid
+      representation:
+        - field
+        - area_average
+        - volume_average
+
+  - id: porosity
+    label: Porosity
+    description: Void fraction of a porous structure.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: porosity
+    canonical_unit: "1"
+    compatible_units:
+      - "1"
+      - "%"
+    status: active
+    tags:
+      - material
+      - porous_media
+      - structure
+
+  - id: permeability
+    label: Permeability
+    description: Permeability of a porous material.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: permeability
+    canonical_unit: m^2
+    compatible_units:
+      - m^2
+      - darcy
+      - mD
+    status: active
+    tags:
+      - material
+      - porous_media
+
+  - id: density
+    label: Density
+    description: Mass density.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: mass_density
+    canonical_unit: kg/m^3
+    compatible_units:
+      - kg/m^3
+      - g/cm^3
+    status: active
+    tags:
+      - fluid
+      - material
+      - thermal
+
+  - id: dynamic_viscosity
+    label: Dynamic viscosity
+    description: Dynamic viscosity.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: dynamic_viscosity
+    canonical_unit: Pa*s
+    compatible_units:
+      - Pa*s
+      - mPa*s
+      - cP
+    status: active
+    tags:
+      - fluid
+      - transport
+
+  - id: conductivity_electrical
+    label: Electrical conductivity
+    description: Electrical conductivity of a phase or effective medium.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: electrical_conductivity
+    canonical_unit: S/m
+    compatible_units:
+      - S/m
+      - mS/cm
+    status: active
+    tags:
+      - electrochemistry
+      - material
+      - transport
+    preferred_qualifiers:
+      phase:
+        - solid
+        - ionomer
+        - membrane_phase
+        - porous_medium_effective
+      quantity_nature:
+        - intrinsic
+        - effective
+
+  - id: conductivity_thermal
+    label: Thermal conductivity
+    description: Thermal conductivity of a material or effective medium.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: thermal_conductivity
+    canonical_unit: W/m/K
+    compatible_units:
+      - W/m/K
+    status: active
+    tags:
+      - thermal
+      - material
+
+  - id: diffusivity
+    label: Diffusivity
+    description: Diffusivity of a species in a specified phase or medium.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: diffusion_coefficient
+    canonical_unit: m^2/s
+    compatible_units:
+      - m^2/s
+      - cm^2/s
+    status: active
+    tags:
+      - transport
+      - chemistry
+    preferred_qualifiers:
+      species:
+        - h2
+        - o2
+        - h2o
+        - h_plus
+      phase:
+        - gas
+        - liquid
+        - ionomer
+        - membrane_phase
+        - porous_medium_effective
+
+  - id: source_term_mass
+    label: Mass source term
+    description: Volumetric or interfacial source term for mass conservation.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: mass_source_density
+    canonical_unit: kg/m^3/s
+    compatible_units:
+      - kg/m^3/s
+    status: active
+    tags:
+      - simulation
+      - transport
+      - source_term
+    preferred_qualifiers:
+      species:
+        - h2
+        - o2
+        - h2o
+        - none
+
+  - id: source_term_charge
+    label: Charge source term
+    description: Source term associated with charge conservation.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: electric_current_density_divergence
+    canonical_unit: A/m^3
+    compatible_units:
+      - A/m^3
+    status: active
+    tags:
+      - simulation
+      - electrochemistry
+      - source_term
+
+  - id: heat_source_density
+    label: Heat source density
+    description: Volumetric heat source density.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: volumetric_power_density
+    canonical_unit: W/m^3
+    compatible_units:
+      - W/m^3
+    status: active
+    tags:
+      - thermal
+      - source_term
+      - simulation
+
+  - id: relative_humidity
+    label: Relative humidity
+    description: Relative humidity of a gas stream.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: relative_humidity
+    canonical_unit: "1"
+    compatible_units:
+      - "1"
+      - "%"
+    status: active
+    tags:
+      - gas
+      - process
+      - experiment
+
+  - id: dew_point_temperature
+    label: Dew point temperature
+    description: Dew point temperature of a gas mixture.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: temperature
+    canonical_unit: K
+    compatible_units:
+      - K
+      - degC
+    status: active
+    tags:
+      - gas
+      - process
+      - experiment
+
+  - id: membrane_water_content
+    label: Membrane water content
+    description: Water content of the membrane, for example represented by lambda.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: dimensionless_material_state_parameter
+    canonical_unit: "1"
+    compatible_units:
+      - "1"
+    status: active
+    tags:
+      - membrane
+      - electrochemistry
+      - simulation
+      - material_state
+    preferred_qualifiers:
+      phase:
+        - membrane_phase
+      domain:
+        - membrane
+
+  - id: efficiency_voltage
+    label: Voltage efficiency
+    description: Voltage-based efficiency metric.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: efficiency
+    canonical_unit: "1"
+    compatible_units:
+      - "1"
+      - "%"
+    status: active
+    tags:
+      - kpi
+      - derived
+      - electrochemistry
+
+  - id: hydrogen_production_rate
+    label: Hydrogen production rate
+    description: Hydrogen production rate on mass, molar, or volumetric basis.
+    category: variable
+    data_type: float
+    dimensionality: scalar
+    quantity_kind: production_rate
+    canonical_unit: mol/s
+    compatible_units:
+      - mol/s
+      - mmol/s
+      - kg/h
+      - NL/h
+    status: active
+    tags:
+      - kpi
+      - product
+      - electrochemistry
+    preferred_qualifiers:
+      species:
+        - h2
+
+location_templates:
+
+  - id: test_bench_sensor_point
+    description: Generic measured point in a test bench using a hardware sensor.
+    required_fields:
+      - system
+      - component
+      - location_role
+      - acquisition_origin
+      - representation
+      - evaluation_method
+      - coordinate_reference_type
+    recommended_values:
+      system: test_bench
+      acquisition_origin: measured
+      representation: point_value
+      evaluation_method: direct_sensor_reading
+      coordinate_reference_type: sensor_id
+
+  - id: simulation_probe_plane
+    description: Derived quantity on a simulation postprocessing plane.
+    required_fields:
+      - system
+      - component
+      - domain
+      - location_role
+      - acquisition_origin
+      - representation
+      - evaluation_method
+      - coordinate_reference_type
+    recommended_values:
+      system: postprocessing
+      acquisition_origin: derived
+      representation: area_average
+      evaluation_method: postprocessing_plane_probe
+      coordinate_reference_type: plane_id
+
+  - id: simulation_field_domain
+    description: Native field quantity in a simulation domain.
+    required_fields:
+      - system
+      - component
+      - domain
+      - acquisition_origin
+      - representation
+      - temporal_context
+    recommended_values:
+      system: simulation
+      acquisition_origin: simulated
+      representation: field
+      temporal_context: snapshot
+
+example_records:
+
+  - variable_id: temperature
+    value: 353.15
+    unit: K
+    qualifiers:
+      system: test_bench
+      component: anode_loop
+      side: anode
+      location_role: stack_inlet
+      acquisition_origin: measured
+      representation: point_value
+      evaluation_method: direct_sensor_reading
+      coordinate_reference_type: sensor_id
+      temporal_context: instantaneous
+    metadata:
+      source_name_raw: TT_01
+      sensor_id: TT_01
+      original_unit: degC
+
+  - variable_id: pressure
+    value: 2.45e5
+    unit: Pa
+    qualifiers:
+      system: test_bench
+      component: cathode_loop
+      side: cathode
+      location_role: downstream
+      acquisition_origin: measured
+      representation: point_value
+      evaluation_method: control_system_readout
+      quantity_nature: absolute
+      coordinate_reference_type: sensor_id
+      temporal_context: transient
+    metadata:
+      source_name_raw: PT_CATH_OUT
+
+  - variable_id: temperature
+    data_reference: results/case_014/fields/T.vtu
+    unit: K
+    qualifiers:
+      system: simulation
+      component: membrane
+      domain: membrane
+      phase: membrane_phase
+      location_role: internal
+      acquisition_origin: simulated
+      representation: field
+      evaluation_method: node_value
+      temporal_context: snapshot
+    metadata:
+      source_name_raw: T
+
+  - variable_id: pressure
+    value: 2.31e5
+    unit: Pa
+    qualifiers:
+      system: postprocessing
+      component: channel
+      side: anode
+      domain: fluid
+      location_role: channel_outlet
+      acquisition_origin: derived
+      representation: area_average
+      evaluation_method: postprocessing_plane_probe
+      quantity_nature: absolute
+      coordinate_reference_type: plane_id
+      temporal_context: steady_state
+    metadata:
+      source_name_raw: p
+      plane_id: anode_outlet_plane
+
+  - variable_id: current_density
+    value: 2.0e4
+    unit: A/m^2
+    qualifiers:
+      system: experiment
+      component: cell
+      side: none
+      acquisition_origin: derived
+      representation: scalar
+      evaluation_method: balance_calculation
+      basis: geometric_area
+      quantity_nature: averaged
+      temporal_context: steady_state
+    metadata:
+      source_name_raw: j_cell
+
+alias_examples:
+  - source: openfoam
+    mappings:
+      - raw_name: T
+        maps_to: temperature
+      - raw_name: p
+        maps_to: pressure
+      - raw_name: U
+        maps_to: velocity
+      - raw_name: alpha_liq
+        maps_to: volume_fraction
+        fixed_qualifiers:
+          phase: liquid
+      - raw_name: j
+        maps_to: current_density
+
+  - source: internal_testbench
+    mappings:
+      - raw_name: TT_01
+        maps_to: temperature
+        fixed_qualifiers:
+          system: test_bench
+          component: anode_loop
+          location_role: stack_inlet
+          coordinate_reference_type: sensor_id
+      - raw_name: PT_03
+        maps_to: pressure
+        fixed_qualifiers:
+          system: test_bench
+          component: cathode_loop
+          location_role: downstream
+          quantity_nature: absolute
+          coordinate_reference_type: sensor_id
